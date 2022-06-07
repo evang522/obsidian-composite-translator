@@ -1,4 +1,35 @@
 /* Sets all the text color to red! */
-body {
-    color: red;
+/*.my-plugin-ribbon-class {*/
+/*    color: #2121a1;*/
+/*}*/
+.translator-input {
+	height: 10rem;
+	width: 95%;
+	margin-top: 1rem;
+	margin-bottom: 1rem;
+	background: transparent;
+	border: 1px solid gray;
+}
+
+.translator-output {
+	height: 10rem;
+	width: 95%;
+	margin-top: 1rem;
+	margin-bottom: 1rem;
+	background: transparent;
+	border: 1px solid gray;
+}
+
+
+.translator-service-target-language-select-label {
+	margin-right: 1rem;
+	margin-bottom: 1rem;
+}
+
+
+.translator-translate-button {
+	margin-top: 1rem;
+	margin-bottom: 1rem;
+	display: block;
+	width: 10rem;
 }
