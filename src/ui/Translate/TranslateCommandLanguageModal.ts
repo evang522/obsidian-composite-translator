@@ -20,10 +20,18 @@ export default class TranslateCommandLanguageModal extends Modal
 		const {contentEl} = this;
 		const languageField = new DropdownComponent(contentEl);
 
+
 		this.plugin.translator().getAvailableTargetLanguages().forEach((language) =>
 		{
 			languageField.addOption(language.code(), language.name());
 		});
+
+		const lastUsedTargetLanguageCode = this.plugin.dataPoints().lastTargetLanguageCode();
+		if (lastUsedTargetLanguageCode)
+		{
+			languageField.setValue(lastUsedTargetLanguageCode);
+		}
+
 
 		const doTranslate = async () =>
 		{
@@ -34,6 +42,12 @@ export default class TranslateCommandLanguageModal extends Modal
 				const translation = await this.plugin.translator().translate(
 					BaseTranslationRequest.create(null, targetLanguage, this.editor.getSelection())
 				);
+
+				this.plugin.persistModifiedPluginData((pluginData) =>
+				{
+					pluginData.dataPoints().setLastTargetLanguageCode(targetLanguage);
+				});
+
 				this.editor.replaceSelection(translation.text());
 			} catch (e)
 			{

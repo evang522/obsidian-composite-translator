@@ -3,7 +3,7 @@ import {DataPointsShape} from "./DataPointsShape";
 export default class DataPoints
 {
 	private constructor(
-		private _lastTargetLanguageCode: string,
+		private _lastTargetLanguageCode: string | null,
 	)
 	{
 	}
@@ -18,7 +18,7 @@ export default class DataPoints
 		return new DataPoints('EN');
 	}
 
-	public lastTargetLanguageCode(): string
+	public lastTargetLanguageCode(): string | null
 	{
 		return this._lastTargetLanguageCode;
 	}

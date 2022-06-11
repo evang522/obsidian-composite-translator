@@ -76,7 +76,10 @@ export default class TranslationWindow extends ItemView
 			})
 		});
 
-		targetlanguageSelector.setValue(this.plugin.dataPoints().lastTargetLanguageCode());
+		if (this.plugin.dataPoints().lastTargetLanguageCode())
+		{
+			targetlanguageSelector.setValue(this.plugin.dataPoints().lastTargetLanguageCode());
+		}
 
 
 		const outputTextAreaComponent = new TextAreaComponent(contentEl)

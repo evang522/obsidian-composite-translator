@@ -1,4 +1,4 @@
 export interface DataPointsShape
 {
-	lastTargetLanguageCode: string;
+	lastTargetLanguageCode: string | null;
 }
