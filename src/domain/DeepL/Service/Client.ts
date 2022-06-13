@@ -1,7 +1,10 @@
-import electron from 'electron';
 import StringManipulator from "../../../infrastructure/Common/String/StringManipulator";
 import TextTranslation from "../Model/TextTranslation";
 import TextLimitReached from "../Exception/TextLimitReached";
+import {QueryClientInterface} from "../../../infrastructure/Http/QueryClient/QueryClientInterface";
+import HttpQueryClient from "../../../infrastructure/Http/QueryClient/QueryClient";
+import ExpectJsonAndThrowIfNotOk from "../../../infrastructure/Http/ResponseHandler/ExpectJsonAndThrowIfNotOk";
+import HttpQueryBuilder from "../../../infrastructure/Http/Builder/HttpQueryBuilder";
 
 export default class Client
 {
@@ -10,6 +13,7 @@ export default class Client
 
 	private constructor(
 		private readonly apiKey: string,
+		private readonly httpQueryClient: QueryClientInterface = new HttpQueryClient(),
 	)
 	{
 	}
@@ -34,7 +38,7 @@ export default class Client
 		return Client.PAID_API_URL;
 	}
 
-	public translate(sourceText: string, sourceLanguage: string, targetLanguage: string): Promise<TextTranslation>
+	public async translate(sourceText: string, sourceLanguage: string, targetLanguage: string): Promise<TextTranslation>
 	{
 		if (this.isFreeApiKey() && sourceText.length > 5000)
 		{
@@ -47,36 +51,18 @@ export default class Client
 			.append('&auth_key=' + this.apiKey)
 			.get();
 
-		const request = electron.remote.net.request({
-			url: requestUrl,
-			method: 'POST'
-		});
+		const httpQuery = HttpQueryBuilder.new(requestUrl)
+			.withResponseHandler(new ExpectJsonAndThrowIfNotOk())
+			.withMethod('POST')
+			.get();
 
-		return new Promise((resolve, reject) =>
-		{
-			request.on("response", (response: any) =>
-			{
-				console.log(response.statusCode);
-				response.on("error", () =>
-				{
-					reject('bad');
-				});
-				response.on("data", (chunk: any) =>
-				{
-					const responseBody = JSON.parse(chunk);
-					console.log(responseBody);
-					if (!responseBody || !responseBody.translations || !responseBody.translations.length)
-					{
-						reject('Translation Failed');
-					}
-					const firstTranslation = responseBody.translations[0];
-					resolve(
-						TextTranslation.create(firstTranslation.text, firstTranslation.detected_source_language)
-					);
-				});
-			});
-			request.end();
-		});
+		const response = await this.httpQueryClient.processQuery<{
+			translations: Array<{ detected_source_language: string, text: string }>
+		}>(httpQuery);
 
+		const firstTranslation = response.translations[0];
+
+
+		return TextTranslation.create(firstTranslation.text, firstTranslation.detected_source_language);
 	}
 }

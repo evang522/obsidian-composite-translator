@@ -5,6 +5,7 @@
 .translator-input {
 	height: 10rem;
 	width: 95%;
+	margin-left: .5rem;
 	margin-top: 1rem;
 	margin-bottom: 1rem;
 	background: transparent;
@@ -14,6 +15,7 @@
 .translator-output {
 	height: 10rem;
 	width: 95%;
+	margin-left: .5rem;
 	margin-top: 1rem;
 	margin-bottom: 1rem;
 	background: transparent;
@@ -21,15 +23,21 @@
 }
 
 
-.translator-service-target-language-select-label {
+.translator-service-target-language-select {
 	margin-right: 1rem;
 	margin-bottom: 1rem;
+	margin-left: .5rem;
 }
 
 
 .translator-translate-button {
+	margin-left: .5rem;
 	margin-top: 1rem;
 	margin-bottom: 1rem;
 	display: block;
 	width: 10rem;
+}
+
+.translation-window-title {
+	margin-left: .5rem;
 }

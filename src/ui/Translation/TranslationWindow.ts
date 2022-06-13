@@ -35,7 +35,7 @@ export default class TranslationWindow extends ItemView
 		const translator = this.plugin.translator();
 
 		contentEl.empty();
-		contentEl.createEl("h4", {text: "Translator"});
+		contentEl.createEl("h4", {cls: 'translation-window-title', text: "Composite Translator"});
 
 		const inputTextAreaComponent = new TextAreaComponent(contentEl)
 			.setPlaceholder('Text to Translate');
@@ -43,6 +43,7 @@ export default class TranslationWindow extends ItemView
 
 
 		const targetlanguageSelector = new DropdownComponent(contentEl);
+		targetlanguageSelector.selectEl.style.marginLeft = '.5rem';
 
 		const supportedLanguages = translator.getAvailableTargetLanguages();
 
@@ -80,7 +81,6 @@ export default class TranslationWindow extends ItemView
 		{
 			targetlanguageSelector.setValue(this.plugin.dataPoints().lastTargetLanguageCode());
 		}
-
 
 		const outputTextAreaComponent = new TextAreaComponent(contentEl)
 			.setPlaceholder('Translated Text');

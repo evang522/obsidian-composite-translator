@@ -1,6 +1,6 @@
 import {App, PluginSettingTab, Setting} from "obsidian";
 import TranslatorPlugin from "../../application/TranslatorPlugin";
-import {TranslationServiceType} from "../../domain/Settings/Model/Settings";
+import {TranslationServiceType} from "../../domain/Data/Model/UserSettings";
 
 export default class SettingsTab extends PluginSettingTab
 {
@@ -52,6 +52,7 @@ export default class SettingsTab extends PluginSettingTab
 			.setName('API Key')
 			.setDesc('Using a translation service requires an API key.')
 			.addText(component => component
+				.setValue(this.plugin.userSettings().translationServiceApiToken() || '')
 				.onChange(async (value) =>
 				{
 					this.plugin.userSettings().setTranslationServiceApiToken(value);
