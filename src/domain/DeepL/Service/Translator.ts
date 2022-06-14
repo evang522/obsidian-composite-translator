@@ -3,7 +3,8 @@ import BaseTranslationRequest from "../../Translator/Model/BaseTranslationReques
 import BaseTranslationResponse from "../../Translator/Model/BaseTranslationResponse";
 import Client from "./Client";
 import TranslatorInterface from "../../Translator/Service/TranslatorInterface";
-import supportedLanguages from './supportedLanguages.json';
+import supportedTargetLanguages from './supportedTargetLanguages';
+import supportedSourceLanguages from './supportedSourceLanguages';
 
 export default class Translator implements TranslatorInterface
 {
@@ -20,7 +21,12 @@ export default class Translator implements TranslatorInterface
 
 	public getAvailableTargetLanguages(): LanguageModel[]
 	{
-		return supportedLanguages.map((language) => LanguageModel.create(language.language, language.name));
+		return supportedTargetLanguages.map((language) => LanguageModel.create(language.language, language.name));
+	}
+
+	public getAvailableSourceLanguages(): LanguageModel[]
+	{
+		return supportedSourceLanguages.map((language) => LanguageModel.create(language.language, language.name));
 	}
 
 	public async translate(translationRequest: BaseTranslationRequest): Promise<BaseTranslationResponse>

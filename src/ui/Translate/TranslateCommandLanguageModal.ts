@@ -1,7 +1,6 @@
 import TranslatorPlugin from "../../application/TranslatorPlugin";
 import {ButtonComponent, DropdownComponent, Editor, Modal, Notice} from "obsidian";
 import BaseTranslationRequest from "../../domain/Translator/Model/BaseTranslationRequest";
-import TextLimitReached from "../../domain/DeepL/Exception/TextLimitReached";
 
 export default class TranslateCommandLanguageModal extends Modal
 {
@@ -27,8 +26,8 @@ export default class TranslateCommandLanguageModal extends Modal
 
 		const translateButton = new ButtonComponent(contentEl)
 			.setButtonText("Translate")
-			.onClick(() => this.doTranslate(languageField));
-		translateButton.buttonEl.className = 'translator-translate-button';
+			.setClass('translator-translate-button');
+		translateButton.onClick(() => this.doTranslate(languageField, translateButton));
 
 		languageField.selectEl.onkeydown = (e) =>
 		{
@@ -54,8 +53,9 @@ export default class TranslateCommandLanguageModal extends Modal
 
 	}
 
-	private async doTranslate(languageField: DropdownComponent)
+	private async doTranslate(languageField: DropdownComponent, translateButton: ButtonComponent): Promise<void>
 	{
+		translateButton.setButtonText('Translating...');
 		const targetLanguage = languageField.getValue();
 		try
 		{
@@ -71,10 +71,7 @@ export default class TranslateCommandLanguageModal extends Modal
 			this.editor.replaceSelection(translation.text());
 		} catch (e)
 		{
-			if (e instanceof TextLimitReached)
-			{
-				new Notice(e.message);
-			}
+			new Notice(e.message);
 		}
 
 		this.close();

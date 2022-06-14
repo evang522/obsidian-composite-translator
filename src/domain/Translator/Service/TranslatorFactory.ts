@@ -1,17 +1,17 @@
 import TranslatorInterface from "./TranslatorInterface";
-import Settings from "../../Settings/Model/Settings";
 import Translator from "../../DeepL/Service/Translator";
 import TranslationServiceNotSupported from "../Exception/TranslationServiceNotSupported";
 import PluginInactiveTranslator from "./PluginInactiveTranslator";
+import UserSettings from "../../Data/Model/UserSettings";
 
 export default class TranslatorFactory
 {
-	public static create(settings: Settings): TranslatorInterface
+	public static create(settings: UserSettings): TranslatorInterface
 	{
 		const apiKey = settings.translationServiceApiToken();
 		if (!apiKey)
 		{
-			return new PluginInactiveTranslator(settings.chosenTranslationService());
+			return PluginInactiveTranslator.create(settings.chosenTranslationService());
 		}
 
 
@@ -24,7 +24,7 @@ export default class TranslatorFactory
 		}
 	}
 
-	private static createDeeplTranslator(settings: Settings): TranslatorInterface
+	private static createDeeplTranslator(settings: UserSettings): TranslatorInterface
 	{
 		return Translator.create(settings.translationServiceApiToken());
 	}

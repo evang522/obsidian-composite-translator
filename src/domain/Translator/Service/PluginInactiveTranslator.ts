@@ -11,8 +11,17 @@ export default class PluginInactiveTranslator implements TranslatorInterface
 	)
 	{
 	}
+	public static create(chosenTranslationServiceId: string): TranslatorInterface
+	{
+		return new PluginInactiveTranslator(chosenTranslationServiceId);
+	}
 
 	public getAvailableTargetLanguages(): LanguageModel[]
+	{
+		throw TranslationServiceNotActivated.forTranslationServiceId(this._chosenTranslationServiceId)
+	}
+
+	getAvailableSourceLanguages(): LanguageModel[]
 	{
 		throw TranslationServiceNotActivated.forTranslationServiceId(this._chosenTranslationServiceId)
 	}

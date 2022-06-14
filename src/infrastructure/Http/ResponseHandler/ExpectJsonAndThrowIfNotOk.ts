@@ -1,23 +1,14 @@
-import ResponseHandlerInterface from './ResponseHandlerInterface';
+import BaseResponseHandler from "./BaseResponseHandler";
 
-export default class ExpectJsonAndThrowIfNotOk implements ResponseHandlerInterface
+export default class ExpectJsonAndThrowIfNotOk extends BaseResponseHandler
 {
-    public async handle(response: Response): Promise<Record<string, string>>
-    {
-        const [
-            responseOK,
-            body,
-        ] = await Promise.all([
-            response.ok,
-            response.json(),
-            response.status,
-        ]);
+	public async handle(response: Response): Promise<Record<string, string>>
+	{
+		if (!response.ok)
+		{
+			throw this.resolveHttpExceptionFromResponse(response);
+		}
 
-        if (!responseOK)
-        {
-            throw new Error(body.message);
-        }
-
-        return body;
-    }
+		return await response.json();
+	}
 }

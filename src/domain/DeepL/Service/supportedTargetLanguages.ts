@@ -1,4 +1,4 @@
-[
+export default [
 	{
 		"language": "BG",
 		"name": "Bulgarian"
@@ -106,6 +106,10 @@
 	{
 		"language": "SV",
 		"name": "Swedish"
+	},
+	{
+		"language": "TR",
+		"name": "Turkish"
 	},
 	{
 		"language": "ZH",

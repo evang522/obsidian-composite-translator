@@ -67,6 +67,13 @@ export default class HttpQueryBuilder
 		return this;
 	}
 
+	public withFormBody(formBody: FormData): HttpQueryBuilder
+	{
+		this.requestInfo.body = formBody;
+
+		return this;
+	}
+
 	public get(): HttpQuery
 	{
 		if (!this.responseHandler)
@@ -76,7 +83,7 @@ export default class HttpQueryBuilder
 
 		const request = new Request(this.uri, this.requestInfo);
 
-		return new HttpQuery(
+		return HttpQuery.create(
 			request,
 			this.responseHandler
 		);

@@ -7,6 +7,6 @@ export default class TextLimitReached extends Error
 
 	public static forCharacterCount(characterCount: number): TextLimitReached
 	{
-		return new this(`Text limit reached: ${characterCount} characters is the highest permitted with DeepL Free Api.`);
+		return new this(`Text limit reached: ${characterCount} characters submitted, but 5000 characters is the highest permitted with DeepL Free Api.`);
 	}
 }

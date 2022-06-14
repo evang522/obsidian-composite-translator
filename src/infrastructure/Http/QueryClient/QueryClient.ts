@@ -2,10 +2,11 @@ import HttpQuery from '../Query/HttpQuery';
 import { QueryClientInterface } from './QueryClientInterface';
 import fetch, {RequestInfo} from 'node-fetch';
 
-export default class HttpQueryClient implements QueryClientInterface
+export default class QueryClient implements QueryClientInterface
 {
     public async sendRawRequest(request: Request): Promise<Response>
     {
+		// @ts-ignore
         return await fetch(request as RequestInfo) as Response;
     }
 

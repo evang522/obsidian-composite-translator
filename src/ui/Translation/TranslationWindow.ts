@@ -1,5 +1,4 @@
 import {DropdownComponent, ItemView, TextAreaComponent, WorkspaceLeaf} from "obsidian";
-import Translator from "../../domain/DeepL/Service/Translator";
 import BaseTranslationRequest from "../../domain/Translator/Model/BaseTranslationRequest";
 import TranslatorPlugin from "../../application/TranslatorPlugin";
 
@@ -29,6 +28,15 @@ export default class TranslationWindow extends ItemView
 		return TranslationWindow.VIEW_TYPE;
 	}
 
+	public switchSourceAndTargetLanguages(sourceDropdown: DropdownComponent, targetDropdown: DropdownComponent): void
+	{
+		const sourceLanguage = sourceDropdown.getValue();
+		const targetLanguage = targetDropdown.getValue();
+
+		sourceDropdown.setValue(targetLanguage);
+		targetDropdown.setValue(sourceLanguage);
+	}
+
 	public async onOpen(): Promise<void>
 	{
 		const {contentEl} = this;
@@ -37,10 +45,19 @@ export default class TranslationWindow extends ItemView
 		contentEl.empty();
 		contentEl.createEl("h4", {cls: 'translation-window-title', text: "Composite Translator"});
 
+		const sourceLanguageSelector = new DropdownComponent(contentEl);
+		sourceLanguageSelector.selectEl.style.marginLeft = '.5rem';
+
+		const supportedSourceLanguages = translator.getAvailableSourceLanguages();
+		supportedSourceLanguages.forEach((language) =>
+		{
+			sourceLanguageSelector.addOption(language.code(), language.name());
+		});
+
+
 		const inputTextAreaComponent = new TextAreaComponent(contentEl)
 			.setPlaceholder('Text to Translate');
 		inputTextAreaComponent.inputEl.className = 'translator-input';
-
 
 		const targetlanguageSelector = new DropdownComponent(contentEl);
 		targetlanguageSelector.selectEl.style.marginLeft = '.5rem';
@@ -67,9 +84,13 @@ export default class TranslationWindow extends ItemView
 			}
 
 			const translation = await translator.translate(
-				BaseTranslationRequest.create(null, value.trim(), inputAreaComponentValue.trim())
+				BaseTranslationRequest.create(sourceLanguageSelector.getValue(), value.trim(), inputAreaComponentValue.trim())
 			);
 			outputTextAreaComponent.setValue(translation.text());
+			if (translation.sourceLanguage())
+			{
+				sourceLanguageSelector.setValue(translation.sourceLanguage());
+			}
 
 			this.plugin.persistModifiedPluginData((pluginData) =>
 			{
@@ -87,7 +108,7 @@ export default class TranslationWindow extends ItemView
 		outputTextAreaComponent.inputEl.className = 'translator-output';
 
 
-		let timer = null;
+		let timer: NodeJS.Timeout | number = null;
 		inputTextAreaComponent.onChange((value) =>
 			{
 				const trimmedValue = value.trim();
@@ -99,7 +120,8 @@ export default class TranslationWindow extends ItemView
 
 				if (timer)
 				{
-					clearTimeout(timer);
+					// @ts-ignore
+					clearTimeout(timer as NodeJS.Timeout);
 					timer = null;
 				}
 
@@ -110,6 +132,12 @@ export default class TranslationWindow extends ItemView
 						BaseTranslationRequest.create(null, targetlanguageSelector.getValue(), trimmedValue)
 					);
 					outputTextAreaComponent.setValue(translation.text());
+					console.log(translation);
+					if (translation.sourceLanguage())
+					{
+						sourceLanguageSelector.setValue(translation.sourceLanguage());
+					}
+
 				}, TranslationWindow.KEYDOWN_TIMEOUT);
 			}
 		)

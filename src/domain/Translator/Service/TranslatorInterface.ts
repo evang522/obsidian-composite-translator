@@ -7,4 +7,6 @@ export default interface TranslatorInterface
 	translate(translationRequest: BaseTranslationRequest): Promise<BaseTranslationResponse>;
 
 	getAvailableTargetLanguages(): LanguageModel[];
+
+	getAvailableSourceLanguages(): LanguageModel[];
 }
