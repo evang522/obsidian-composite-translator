@@ -63,7 +63,7 @@ export default class TranslatorPlugin extends Plugin
 
 	public async loadPluginStorageData(): Promise<void>
 	{
-		const loadedPluginData = await this.loadData() as Partial<PluginDataShape>;
+		const loadedPluginData = (await this.loadData()) || {} as Partial<PluginDataShape>;
 		this.pluginData.mergePartialData(loadedPluginData);
 	}
 
