@@ -29,12 +29,20 @@ export default class Translator implements TranslatorInterface
 		return supportedSourceLanguages.map((language) => LanguageModel.create(language.language, language.name));
 	}
 
+	public languagesSupportingInformalityRequest(): string[]
+	{
+		return ['de'];
+	}
+
 	public async translate(translationRequest: BaseTranslationRequest): Promise<BaseTranslationResponse>
 	{
+		const requestInformal = this.languagesSupportingInformalityRequest().includes(translationRequest.targetLanguage().toLowerCase()) && translationRequest.informal();
+
 		const translation = await this.deepl.translate(
 			translationRequest.text(),
 			translationRequest.sourceLanguage(),
-			translationRequest.targetLanguage()
+			translationRequest.targetLanguage(),
+			requestInformal
 		);
 
 		return BaseTranslationResponse.create(translation.text(), translation.detectedSourceLanguage());

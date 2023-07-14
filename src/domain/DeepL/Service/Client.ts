@@ -22,7 +22,7 @@ export default class Client
 		return new Client(apiKey);
 	}
 
-	public async translate(sourceText: string, sourceLanguage: string, targetLanguage: string): Promise<TextTranslation>
+	public async translate(sourceText: string, sourceLanguage: string, targetLanguage: string, informal: boolean): Promise<TextTranslation>
 	{
 		const requestUrl = StringManipulator.create(this.getApiUrl()).get();
 
@@ -30,6 +30,9 @@ export default class Client
 		formBody.append('text', sourceText)
 		formBody.append('target_lang', targetLanguage)
 		formBody.append('auth_key', this.apiKey)
+		if (informal) {
+			formBody.append('formality', 'less')
+		}
 
 		const httpQuery = HttpQueryBuilder.new(requestUrl)
 			.withResponseHandler(new ExpectJsonAndThrowIfNotOk())

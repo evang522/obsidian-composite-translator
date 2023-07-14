@@ -23,11 +23,15 @@ export default class TranslateCommandLanguageModal extends Modal
 		this.titleEl.style.fontSize = '1.1rem';
 		const languageField = new DropdownComponent(contentEl);
 
+		const formalitySelector = new DropdownComponent(contentEl);
+		formalitySelector.addOption('formal', 'Formal');
+		formalitySelector.addOption('informal', 'Informal');
+		formalitySelector.setValue('informal');
 
 		const translateButton = new ButtonComponent(contentEl)
 			.setButtonText("Translate")
 			.setClass('translator-translate-button');
-		translateButton.onClick(() => this.doTranslate(languageField, translateButton));
+		translateButton.onClick(() => this.doTranslate(languageField, translateButton, formalitySelector));
 
 		languageField.selectEl.onkeydown = (e) =>
 		{
@@ -53,15 +57,18 @@ export default class TranslateCommandLanguageModal extends Modal
 
 	}
 
-	private async doTranslate(languageField: DropdownComponent, translateButton: ButtonComponent): Promise<void>
+	private async doTranslate(languageField: DropdownComponent, translateButton: ButtonComponent, informalSelector: DropdownComponent): Promise<void>
 	{
 		translateButton.setButtonText('Translating...');
 		const targetLanguage = languageField.getValue();
 		try
 		{
-			const translation = await this.plugin.translator().translate(
-				BaseTranslationRequest.create(null, targetLanguage, this.editor.getSelection())
-			);
+			const translationRequest = BaseTranslationRequest.create(null, targetLanguage, this.editor.getSelection());
+			if (informalSelector.getValue() === 'informal') {
+				translationRequest.setInformal();
+			}
+
+			const translation = await this.plugin.translator().translate(translationRequest);
 
 			this.plugin.persistModifiedPluginData((pluginData) =>
 			{
